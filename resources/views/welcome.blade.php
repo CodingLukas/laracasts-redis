@@ -7,6 +7,6 @@
         <title>Laravel</title>
     </head>
     <body class="antialiased">
-        Hello. You are visitor {{ $visits }}
+        Downloads {{ $downloads ?? '0' }}
     </body>
 </html>
