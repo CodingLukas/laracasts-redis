@@ -4,6 +4,7 @@ use App\Models\Article;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
+use PHPUnit\Framework\Constraint\Callback;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,8 +49,28 @@ Route::get('/articles/{article}', function (Article $article) {
     return $article;
 });
 
+//function remember (string $key, int $minutes, Closure $callback) {
+//
+//    if($value = Redis::get($key)){
+//        return json_decode($value);
+//    }
+//
+//    Redis::setex($key, $minutes, $value = $callback());
+//
+//    return $value;
+//}
 
 Route::get('/', function () {
+    return Cache::remember('articles.all', 60 * 60, function () {
+        return Article::all();
+    });
+
+
+//    remember('articles.all',  60 * 60, function(){
+//       return Article::all();
+//    });
+
+
 //    $user2Stats = [
 //        'favorites' => 50,
 //        'watchLaters' => 90,
@@ -59,14 +80,13 @@ Route::get('/', function () {
 //    Redis::hmset('user.2.stats', $user2Stats);
 
 
-
 //    return Redis::hgetall('user.2.stats');
 
     /** put method serializes input */
-    Cache::put('foo', 'bar', 10);
+//    Cache::put('foo', 'bar', 10);
 
 
-    return Cache::get('foo');
+//    return Cache::get('foo');
 });
 
 //Route::get('users/{id}/stats', function ($id) {
