@@ -1,6 +1,9 @@
 <?php
 
 use App\Models\Article;
+use App\Repositories\ArticleRepository;
+use App\Repositories\CacheableArticleRepository;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
@@ -60,11 +63,13 @@ Route::get('/articles/{article}', function (Article $article) {
 //    return $value;
 //}
 
-Route::get('/', function () {
-    return Cache::remember('articles.all', 60 * 60, function () {
-        return Article::all();
-    });
+App::bind('Articles', function (){
+   return new CacheableArticleRepository(new ArticleRepository());
+});
 
+Route::get('/', function (CacheableArticleRepository $articles) {
+
+    return $articles->all();
 
 //    remember('articles.all',  60 * 60, function(){
 //       return Article::all();
