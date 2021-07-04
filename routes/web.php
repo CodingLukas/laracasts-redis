@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Article;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
 
@@ -40,7 +41,7 @@ Route::get('/articles/trending', function () {
 });
 
 Route::get('/articles/{article}', function (Article $article) {
-    Redis::zincrby('trending_articles', 1, (string) $article);
+    Redis::zincrby('trending_articles', 1, (string)$article);
 
 //    Redis::zremrangebyrank('trending_articles', 0, -101);
 
@@ -48,3 +49,34 @@ Route::get('/articles/{article}', function (Article $article) {
 });
 
 
+Route::get('/', function () {
+//    $user2Stats = [
+//        'favorites' => 50,
+//        'watchLaters' => 90,
+//        'completions' => 25
+//    ];
+//
+//    Redis::hmset('user.2.stats', $user2Stats);
+
+
+
+//    return Redis::hgetall('user.2.stats');
+
+    /** put method serializes input */
+    Cache::put('foo', 'bar', 10);
+
+
+    return Cache::get('foo');
+});
+
+//Route::get('users/{id}/stats', function ($id) {
+//
+//    return Redis::hgetall('user.' . $id . '.stats');
+//});
+
+Route::get('favorite-video', function () {
+
+    Redis::hincrby('user.' . 2 . '.stats', 'favorites', 1);
+
+    return redirect('/');
+});
